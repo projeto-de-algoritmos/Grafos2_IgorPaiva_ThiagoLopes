@@ -4,7 +4,7 @@ export default class Graph {
   }
 
   addNode(node) {
-    this.nodes[node.id] = node;
+    this.nodes[node.id] = { node, adjList: [] };
   }
 
   getNode(id) {
@@ -16,8 +16,8 @@ export default class Graph {
   }
 
   addEdge(srcId, destId) {
-    this.nodes[srcId].addEdge(destId);
+    this.nodes[srcId].adjList.push(destId);
 
-    this.nodes[destId].addEdge(srcId);
+    this.nodes[destId].adjList.push(srcId);
   }
 }

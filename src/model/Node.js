@@ -3,7 +3,6 @@ export default class Node {
     this.id = id;
     this.coordinates = coordinates;
     this.properties = properties;
-    this.edges = [];
   }
 
   getId() {
@@ -16,13 +15,5 @@ export default class Node {
 
   getProperties() {
     return this.properties;
-  }
-
-  getEdges() {
-    return this.edges;
-  }
-
-  addEdge(destId) {
-    this.edges.push(destId);
   }
 }
