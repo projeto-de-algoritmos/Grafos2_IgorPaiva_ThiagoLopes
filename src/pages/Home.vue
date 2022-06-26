@@ -1,19 +1,31 @@
 <template>
   <q-page class="flex flex-center">
-    <div style="position: relative">
-      <canvas id="canvas"></canvas>
+    <div class="container q-mt-md">
+      <canvas id="canvas" class="canvas"></canvas>
 
       <div
         v-for="road in roads"
         :key="road.id"
         class="road"
-        :style="`left: ${road.coordinates.x}px; top: ${road.coordinates.y}px`"
+        :style="roadCssCoordinates(road)"
       />
     </div>
   </q-page>
 </template>
 
 <style>
+.canvas {
+  top: 0;
+  left: 0;
+  position: absolute;
+}
+
+.container {
+  width: 1280px;
+  height: 1024px;
+  position: relative;
+}
+
 .road {
   width: 12px;
   height: 12px;
@@ -31,7 +43,7 @@ import canvasBackground from '../assets/images/white_orchard_clean_map.png';
 export default defineComponent({
   name: 'HomePage',
   created() {
-    const { graph, roads } = loadMapData();
+    const { graph, roads } = loadMapData(false);
 
     this.graph = graph;
     this.roads = roads;
@@ -49,7 +61,7 @@ export default defineComponent({
     background.onload = () => {
       ctx.drawImage(background, 0, 0);
 
-      const path = this.graph.bfsFromStartToDest('mill', 'poi_16');
+      const path = this.graph.bfsFromStartToDest('nilfgaardian_garrison', 'poi_29');
 
       this.drawPath(path);
     };
@@ -60,6 +72,7 @@ export default defineComponent({
       graph: null,
       canvasWidth: 1280,
       canvasHeight: 1024,
+      roadCorrection: 5,
     };
   },
   methods: {
@@ -90,6 +103,9 @@ export default defineComponent({
       ctx.moveTo(srcX, srcY);
       ctx.lineTo(destX, destY);
       ctx.stroke();
+    },
+    roadCssCoordinates(road) {
+      return `left: ${road.coordinates.x - this.roadCorrection}px; top: ${road.coordinates.y - this.roadCorrection}px`;
     },
   },
 });
