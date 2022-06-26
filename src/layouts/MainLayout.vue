@@ -58,6 +58,10 @@ const linksList = [
     link: '/',
   },
   {
+    title: 'Map',
+    caption: 'Map with all edges',
+    icon: 'map',
+    link: '/map',
   },
 ];
 
