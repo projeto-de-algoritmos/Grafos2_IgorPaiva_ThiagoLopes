@@ -8,10 +8,14 @@
 
 <script>
 import { defineComponent } from 'vue';
+import { loadMapData } from '../model/load';
 import canvasBackground from '../assets/images/white_orchard_clean_map.png';
 
 export default defineComponent({
   name: 'HomePage',
+  created() {
+    this.graph = loadMapData();
+  },
   mounted() {
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
@@ -24,13 +28,48 @@ export default defineComponent({
 
     background.onload = () => {
       ctx.drawImage(background, 0, 0);
+
+      const path = this.graph.bfsFromStartToDest('mill', 'poi_16');
+
+      this.drawPath(path);
     };
   },
   data() {
     return {
+      graph: null,
       canvasWidth: 1280,
       canvasHeight: 1024,
     };
+  },
+  methods: {
+    drawPath(path) {
+      const nodes = this.graph.getAllNodes();
+
+      for (let i = 0; i < path.length; i += 1) {
+        if (!path[i + 1]) break;
+
+        this.drawEdge(nodes[path[i]].node, nodes[path[i + 1]].node);
+      }
+    },
+    drawEdge(src, dest) {
+      this.drawLine(
+        src.coordinates.x,
+        src.coordinates.y,
+        dest.coordinates.x,
+        dest.coordinates.y,
+      );
+    },
+    drawLine(srcX, srcY, destX, destY, color = '#000000') {
+      const canvas = document.getElementById('canvas');
+      const ctx = canvas.getContext('2d');
+
+      ctx.beginPath();
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 5;
+      ctx.moveTo(srcX, srcY);
+      ctx.lineTo(destX, destY);
+      ctx.stroke();
+    },
   },
 });
 </script>
