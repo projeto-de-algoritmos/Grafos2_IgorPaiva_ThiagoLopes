@@ -4,9 +4,23 @@ import mapData from '../assets/mapData';
 
 export const loadMapData = (fastTravel = true) => {
   const graph = new Graph();
+  const roads = [];
+  const pois = [];
 
-  mapData.nodes.forEach((node) => {
-    graph.addNode(new Node(node.id, node.coordinates, node.properties));
+  mapData.points_of_interest.forEach((poi) => {
+    const node = new Node(poi.id, poi.coordinates, poi.properties);
+
+    graph.addNode(node);
+
+    pois.push(node);
+  });
+
+  mapData.roads.forEach((road) => {
+    const node = new Node(road.id, road.coordinates, road.properties);
+
+    graph.addNode(node);
+
+    roads.push(node);
   });
 
   mapData.edges.forEach((edge) => {
@@ -14,14 +28,14 @@ export const loadMapData = (fastTravel = true) => {
   });
 
   if (fastTravel) {
-    const combinations = mapData.signposts.flatMap(
+    const signpostsCombinations = mapData.signposts.flatMap(
       (v, i) => mapData.signposts.slice(i + 1).map((w) => [v, w]),
     );
 
-    combinations.forEach((edge) => {
+    signpostsCombinations.forEach((edge) => {
       graph.addEdge(edge[0], edge[1]);
     });
   }
 
-  return graph;
+  return { graph, roads, pois };
 };

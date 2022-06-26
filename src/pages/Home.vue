@@ -2,9 +2,26 @@
   <q-page class="flex flex-center">
     <div style="position: relative">
       <canvas id="canvas"></canvas>
+
+      <div
+        v-for="road in roads"
+        :key="road.id"
+        class="road"
+        :style="`left: ${road.coordinates.x}px; top: ${road.coordinates.y}px`"
+      />
     </div>
   </q-page>
 </template>
+
+<style>
+.road {
+  width: 12px;
+  height: 12px;
+  position: absolute;
+  border-radius: 100%;
+  background-color: #ff0000;
+}
+</style>
 
 <script>
 import { defineComponent } from 'vue';
@@ -14,7 +31,10 @@ import canvasBackground from '../assets/images/white_orchard_clean_map.png';
 export default defineComponent({
   name: 'HomePage',
   created() {
-    this.graph = loadMapData();
+    const { graph, roads } = loadMapData();
+
+    this.graph = graph;
+    this.roads = roads;
   },
   mounted() {
     const canvas = document.getElementById('canvas');
@@ -36,6 +56,7 @@ export default defineComponent({
   },
   data() {
     return {
+      roads: [],
       graph: null,
       canvasWidth: 1280,
       canvasHeight: 1024,

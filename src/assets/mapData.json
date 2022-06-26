@@ -11,7 +11,7 @@
     "cackler_bridge",
     "ransacked_village"
   ],
-  "nodes": [
+  "points_of_interest": [
     {
       "id": "nilfgaardian_garrison",
       "coordinates": { "x": 160, "y": 137 },
@@ -27,7 +27,7 @@
       "coordinates": { "x": 262, "y": 165 },
       "properties": {
         "guarded_treasure": true
-       }
+      }
     },
     {
       "id": "poi_02",
@@ -283,7 +283,9 @@
       "properties" : {
         "hidden_treasure": true
       }
-    },
+    }
+  ],
+  "roads": [
     {
         "id":"r_01",
         "coordinates":{
