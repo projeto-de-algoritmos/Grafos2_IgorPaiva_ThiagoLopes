@@ -37,5 +37,7 @@ export const loadMapData = (fastTravel = true) => {
     });
   }
 
-  return { graph, roads, pois };
+  return {
+    graph, roads, pois, edges: mapData.edges,
+  };
 };

@@ -1,7 +1,7 @@
 <template>
   <q-page class="flex flex-center">
     <div class="container q-mt-md">
-      <canvas id="canvas" class="canvas"></canvas>
+      <canvas class="canvas" ref="canvas"></canvas>
 
       <div
         v-for="road in roads"
@@ -43,13 +43,14 @@ import canvasBackground from '../assets/images/white_orchard_clean_map.png';
 export default defineComponent({
   name: 'HomePage',
   created() {
-    const { graph, roads } = loadMapData(false);
+    const { graph, roads, edges } = loadMapData(false);
 
     this.graph = graph;
     this.roads = roads;
+    this.edges = edges;
   },
   mounted() {
-    const canvas = document.getElementById('canvas');
+    const { canvas } = this.$refs;
     const ctx = canvas.getContext('2d');
 
     canvas.width = 1280;
@@ -61,14 +62,15 @@ export default defineComponent({
     background.onload = () => {
       ctx.drawImage(background, 0, 0);
 
-      const path = this.graph.bfsFromStartToDest('nilfgaardian_garrison', 'poi_29');
+      // this.drawPath(this.graph.bfsFromStartToDest('nilfgaardian_garrison', 'poi_29'));
 
-      this.drawPath(path);
+      this.drawAllEdges();
     };
   },
   data() {
     return {
       roads: [],
+      edges: [],
       graph: null,
       canvasWidth: 1280,
       canvasHeight: 1024,
@@ -94,7 +96,7 @@ export default defineComponent({
       );
     },
     drawLine(srcX, srcY, destX, destY, color = '#000000') {
-      const canvas = document.getElementById('canvas');
+      const { canvas } = this.$refs;
       const ctx = canvas.getContext('2d');
 
       ctx.beginPath();
@@ -103,6 +105,14 @@ export default defineComponent({
       ctx.moveTo(srcX, srcY);
       ctx.lineTo(destX, destY);
       ctx.stroke();
+    },
+    drawAllEdges() {
+      this.edges.forEach((edge) => {
+        const [start, end] = edge;
+        const nodes = this.graph.getAllNodes();
+
+        this.drawEdge(nodes[start].node, nodes[end].node);
+      });
     },
     roadCssCoordinates(road) {
       return `left: ${road.coordinates.x - this.roadCorrection}px; top: ${road.coordinates.y - this.roadCorrection}px`;
