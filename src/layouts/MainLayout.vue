@@ -38,6 +38,8 @@
           target="_self"
         />
       </q-list>
+
+      <FormData />
     </q-drawer>
 
     <q-page-container>
@@ -49,6 +51,7 @@
 <script>
 import { defineComponent, ref } from 'vue';
 import EssentialLink from 'components/EssentialLink.vue';
+import FormData from 'components/FormData.vue';
 
 const linksList = [
   {
@@ -70,6 +73,7 @@ export default defineComponent({
 
   components: {
     EssentialLink,
+    FormData,
   },
 
   setup() {

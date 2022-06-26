@@ -103,7 +103,9 @@ module.exports = configure((ctx) => ({
     // directives: [],
 
     // Quasar plugins
-    plugins: [],
+    plugins: [
+      'SessionStorage',
+    ],
   },
 
   // animations: 'all', // --- includes all animations
