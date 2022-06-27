@@ -1,7 +1,17 @@
 <template>
   <q-page class="flex flex-center">
     <div class="container q-mt-sm">
-      <canvas class="canvas" ref="canvas"></canvas>
+      <canvas class="canvas" ref="canvas">
+        <q-tooltip
+          v-if="startNode && destNode"
+          style="font-size: 12px"
+          :delay="1500"
+          anchor="top middle"
+          self="center middle"
+        >
+          Clique em qualquer lugar do mapa para desselecionar os nós
+        </q-tooltip>
+      </canvas>
 
       <div
         v-for="poi in points_of_interested"
@@ -9,7 +19,11 @@
         class="node poi"
         :style="nodeCss(poi)"
         @click="handleNodeClick(poi)"
-      />
+      >
+        <q-tooltip style="font-size: 12px" v-if="getNodeTooltipMsg(poi.id)">
+          {{getNodeTooltipMsg(poi.id)}}
+        </q-tooltip>
+      </div>
 
       <div
         v-for="road in roads"
@@ -17,7 +31,11 @@
         class="node road"
         :style="nodeCss(road)"
         @click="handleNodeClick(road)"
-      />
+      >
+        <q-tooltip style="font-size: 12px">
+          {{getNodeTooltipMsg(road.id)}}
+        </q-tooltip>
+      </div>
     </div>
   </q-page>
 </template>
@@ -111,8 +129,9 @@ export default defineComponent({
       }
     },
     fastTravel(newValue) {
+      this.saveMapData(newValue);
+
       if (this.hasDrawing) {
-        this.saveMapData(newValue);
         this.clearCanvas();
         this.drawBackgroundImage(() => {
           this.drawPath(this.graph.bfsFromStartToDest(this.startNode, this.destNode));
@@ -158,11 +177,14 @@ export default defineComponent({
       }
     },
     drawEdge(src, dest) {
+      const bothSignposts = src.getProperties().signpost && dest.getProperties().signpost;
+
       this.drawLine(
         src.coordinates.x,
         src.coordinates.y,
         dest.coordinates.x,
         dest.coordinates.y,
+        bothSignposts ? 'rgba(0, 255, 106, 0.8)' : '#000000',
       );
     },
     drawLine(srcX, srcY, destX, destY, color = '#000000') {
@@ -226,6 +248,15 @@ export default defineComponent({
       const context = canvas.getContext('2d');
 
       return { canvas, context };
+    },
+    getNodeTooltipMsg(nodeId) {
+      if (!this.startNode && !this.destNode) return 'Clique para selecionar este nó como início';
+
+      if (this.startNode && !this.destNode && this.startNode !== nodeId) {
+        return 'Clique para selecionar este nó como destino';
+      }
+
+      return '';
     },
   },
 });

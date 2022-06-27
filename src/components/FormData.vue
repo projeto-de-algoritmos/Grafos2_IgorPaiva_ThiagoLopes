@@ -1,8 +1,17 @@
 <template>
   <div class="q-pa-md">
     <div class="q-gutter-sm">
-      <q-checkbox v-model="fastTravel" label="Fast Travel"/>
-      <q-checkbox v-model="showAllEdges" label="Mostrar Arestas"/>
+      <q-checkbox v-model="fastTravel" label="Fast Travel">
+        <q-tooltip style="font-size: 12px">
+          Cria arestas entre todos os signposts
+        </q-tooltip>
+      </q-checkbox>
+
+      <q-checkbox v-model="showAllEdges" label="Mostrar Arestas">
+        <q-tooltip style="font-size: 12px">
+          Desenha todas as arestas disponíveis
+        </q-tooltip>
+      </q-checkbox>
 
       <q-btn-toggle
         v-model="isBfs"
