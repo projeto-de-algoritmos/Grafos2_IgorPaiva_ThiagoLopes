@@ -4,10 +4,19 @@
       <canvas class="canvas" ref="canvas"></canvas>
 
       <div
+        v-for="poi in points_of_interested"
+        :key="poi.id"
+        class="node poi"
+        :style="nodeCss(poi)"
+        @click="handleNodeClick(poi)"
+      />
+
+      <div
         v-for="road in roads"
         :key="road.id"
-        class="road"
-        :style="roadCssCoordinates(road)"
+        class="node road"
+        :style="nodeCss(road)"
+        @click="handleNodeClick(road)"
       />
     </div>
   </q-page>
@@ -26,12 +35,27 @@
   position: relative;
 }
 
+.node {
+  position: absolute;
+  border-radius: 100%;
+}
+
+.node:hover {
+  opacity: 0.8;
+  cursor: pointer;
+}
+
 .road {
   width: 12px;
   height: 12px;
-  position: absolute;
-  border-radius: 100%;
-  background-color: #ff0000;
+  background-color: #AD1D1A;
+}
+
+.poi {
+  width: 24px;
+  height: 24px;
+  opacity: 0.5;
+  background-color: #8B969C;
 }
 </style>
 
@@ -40,6 +64,9 @@ import { mapGetters } from 'vuex';
 import { defineComponent } from 'vue';
 import { loadMapData } from '../model/load';
 import canvasBackground from '../assets/images/white_orchard_clean_map.png';
+
+const POI_COLOR = '#8B969C';
+const ROAD_COLOR = '#AD1D1A';
 
 export default defineComponent({
   name: 'HomePage',
@@ -52,10 +79,12 @@ export default defineComponent({
     canvas.width = this.canvasWidth;
     canvas.height = this.canvasHeight;
 
+    canvas.addEventListener('mousedown', this.handleCanvasClick);
 
     this.drawBackgroundImage();
   },
-
+  beforeUnmount() {
+    this.$refs.canvas.removeEventListener('mousedown', this.handleCanvasClick);
   },
   data() {
     return {
@@ -67,12 +96,13 @@ export default defineComponent({
       hasDrawing: false,
       canvasWidth: 1280,
       canvasHeight: 1024,
-      roadCorrection: 5,
+      nodeCorrection: 5,
     };
   },
   watch: {
     showAllEdges(newValue) {
       this.clearCanvas();
+      this.clearDrawnPath();
 
       if (newValue) {
         this.drawBackgroundImage(this.drawAllEdges);
@@ -97,11 +127,14 @@ export default defineComponent({
   }),
   methods: {
     saveMapData(fastTravel) {
-      const { graph, roads, edges } = loadMapData(fastTravel);
+      const {
+        graph, roads, pois, edges,
+      } = loadMapData(fastTravel);
 
       this.graph = graph;
       this.roads = roads;
       this.edges = edges;
+      this.points_of_interested = pois;
     },
     drawBackgroundImage(callback = () => true) {
       const { context } = this.getCanvasAndContext();
@@ -155,8 +188,44 @@ export default defineComponent({
 
       context.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
     },
-    roadCssCoordinates(road) {
-      return `left: ${road.coordinates.x - this.roadCorrection}px; top: ${road.coordinates.y - this.roadCorrection}px`;
+    nodeCss(node) {
+      const left = node.coordinates.x - this.nodeCorrection;
+      const right = node.coordinates.y - this.nodeCorrection;
+      const selected = node.id === this.startNode || node.id === this.destNode;
+      const color = selected ? '#027be3' : node.getProperties().road ? ROAD_COLOR : POI_COLOR;
+
+      return `left: ${left}px; top: ${right}px; background-color: ${color}`;
+    },
+    clearDrawnPath() {
+      this.destNode = null;
+      this.startNode = null;
+      this.hasDrawing = false;
+
+      this.clearCanvas();
+      this.drawBackgroundImage();
+    },
+    handleNodeClick(node) {
+      if (this.startNode && this.destNode) {
+        this.clearDrawnPath();
+      } else if (!this.startNode) {
+        this.startNode = node.id;
+      } else if (this.startNode && !this.destNode) {
+        this.destNode = node.id;
+
+        this.hasDrawing = true;
+        this.drawPath(this.graph.bfsFromStartToDest(this.startNode, this.destNode));
+      }
+    },
+    handleCanvasClick() {
+      if (this.startNode || this.destNode) {
+        this.clearDrawnPath();
+      }
+    },
+    getCanvasAndContext() {
+      const { canvas } = this.$refs;
+      const context = canvas.getContext('2d');
+
+      return { canvas, context };
     },
   },
 });
