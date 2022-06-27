@@ -1,6 +1,6 @@
 <template>
   <q-page class="flex flex-center">
-    <div class="container q-mt-md">
+    <div class="container q-mt-sm">
       <canvas class="canvas" ref="canvas"></canvas>
 
       <div
@@ -52,21 +52,14 @@ export default defineComponent({
   },
   mounted() {
     const { canvas } = this.$refs;
-    const ctx = canvas.getContext('2d');
 
-    canvas.width = 1280;
-    canvas.height = 1024;
+    canvas.width = this.canvasWidth;
+    canvas.height = this.canvasHeight;
 
-    const background = new Image();
-    background.src = canvasBackground;
 
-    background.onload = () => {
-      ctx.drawImage(background, 0, 0);
+    this.drawBackgroundImage();
+  },
 
-      // this.drawPath(this.graph.bfsFromStartToDest('nilfgaardian_garrison', 'poi_29'));
-
-      this.drawAllEdges();
-    };
   },
   data() {
     return {
@@ -78,12 +71,35 @@ export default defineComponent({
       roadCorrection: 5,
     };
   },
+  watch: {
+    showAllEdges(newValue) {
+      this.clearCanvas();
+
+      if (newValue) {
+        this.drawBackgroundImage(this.drawAllEdges);
+      } else {
+        this.drawBackgroundImage();
+      }
+    },
+  },
   computed: mapGetters({
     isBfs: 'isBfs',
     fastTravel: 'fastTravel',
     showAllEdges: 'showAllEdges',
   }),
   methods: {
+    drawBackgroundImage(callback = () => true) {
+      const { context } = this.getCanvasAndContext();
+
+      const background = new Image();
+      background.src = canvasBackground;
+
+      background.onload = () => {
+        context.drawImage(background, 0, 0);
+
+        callback();
+      };
+    },
     drawPath(path) {
       const nodes = this.graph.getAllNodes();
 
@@ -102,15 +118,14 @@ export default defineComponent({
       );
     },
     drawLine(srcX, srcY, destX, destY, color = '#000000') {
-      const { canvas } = this.$refs;
-      const ctx = canvas.getContext('2d');
+      const { context } = this.getCanvasAndContext();
 
-      ctx.beginPath();
-      ctx.strokeStyle = color;
-      ctx.lineWidth = 5;
-      ctx.moveTo(srcX, srcY);
-      ctx.lineTo(destX, destY);
-      ctx.stroke();
+      context.beginPath();
+      context.strokeStyle = color;
+      context.lineWidth = 5;
+      context.moveTo(srcX, srcY);
+      context.lineTo(destX, destY);
+      context.stroke();
     },
     drawAllEdges() {
       this.edges.forEach((edge) => {
@@ -119,6 +134,11 @@ export default defineComponent({
 
         this.drawEdge(nodes[start].node, nodes[end].node);
       });
+    },
+    clearCanvas() {
+      const { context } = this.getCanvasAndContext();
+
+      context.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
     },
     roadCssCoordinates(road) {
       return `left: ${road.coordinates.x - this.roadCorrection}px; top: ${road.coordinates.y - this.roadCorrection}px`;
