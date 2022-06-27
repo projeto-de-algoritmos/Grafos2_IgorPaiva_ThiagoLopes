@@ -36,6 +36,7 @@
 </style>
 
 <script>
+import { mapGetters } from 'vuex';
 import { defineComponent } from 'vue';
 import { loadMapData } from '../model/load';
 import canvasBackground from '../assets/images/white_orchard_clean_map.png';
@@ -77,6 +78,11 @@ export default defineComponent({
       roadCorrection: 5,
     };
   },
+  computed: mapGetters({
+    isBfs: 'isBfs',
+    fastTravel: 'fastTravel',
+    showAllEdges: 'showAllEdges',
+  }),
   methods: {
     drawPath(path) {
       const nodes = this.graph.getAllNodes();

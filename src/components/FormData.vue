@@ -30,36 +30,36 @@
 </style>
 
 <script>
+/* eslint-disable no-unused-vars */
 import { defineComponent } from 'vue';
-import { useQuasar } from 'quasar';
+import { mapActions, mapGetters } from 'vuex';
 
 export default defineComponent({
   name: 'FormData',
-  props: {
-  },
-  created() {
-    const $q = useQuasar();
-
-    const formData = $q.sessionStorage.getItem('formData');
-
-    if (!formData) {
-      const { isBfs, fastTravel, showAllEdges } = this;
-
-      $q.sessionStorage.set('formData', { isBfs, fastTravel, showAllEdges });
-    } else {
-      const { isBfs, fastTravel, showAllEdges } = formData;
-
-      this.isBfs = isBfs;
-      this.fastTravel = fastTravel;
-      this.showAllEdges = showAllEdges;
-    }
-  },
   data() {
     return {
       isBfs: true,
       fastTravel: false,
       showAllEdges: false,
     };
+  },
+  watch: {
+    isBfs(newValue, _) {
+      this.setIsBfs(newValue);
+    },
+    fastTravel(newValue, _) {
+      this.setFastTravel(newValue);
+    },
+    showAllEdges(newValue, _) {
+      this.setShowAllEdges(newValue);
+    },
+  },
+  methods: {
+    ...mapActions({
+      setIsBfs: 'setIsBfs',
+      setFastTravel: 'setFastTravel',
+      setShowAllEdges: 'setShowAllEdges',
+    }),
   },
 });
 </script>
