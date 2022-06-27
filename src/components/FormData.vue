@@ -14,6 +14,7 @@
         toggle-color="primary"
         text-color="primary"
         spread
+        disable
         :options="[
           {label: 'BFS', value: true},
           {label: 'DFS', value: false}
