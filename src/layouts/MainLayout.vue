@@ -1,29 +1,24 @@
 <template>
   <q-layout view="lHh Lpr lFf">
-    <q-header elevated>
-      <q-toolbar>
+    <q-drawer
+      v-model="leftDrawerOpen"
+      show-if-above
+      bordered
+    >
+      <q-toolbar style="color: #ffffff; background-color: #027be3;">
         <q-btn
           flat
           dense
           round
           icon="menu"
           aria-label="Menu"
-          @click="toggleLeftDrawer"
         />
 
         <q-toolbar-title>
-          The Witcher 3 - White Orchard Map
+          The Witcher 3 - Map
         </q-toolbar-title>
-
-        <div>Quasar v{{ $q.version }}</div>
       </q-toolbar>
-    </q-header>
 
-    <q-drawer
-      v-model="leftDrawerOpen"
-      show-if-above
-      bordered
-    >
       <q-list>
         <q-item-label
           header
@@ -38,6 +33,8 @@
           target="_self"
         />
       </q-list>
+
+      <hr class="q-mt-lg">
 
       <FormData />
     </q-drawer>
