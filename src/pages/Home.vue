@@ -44,11 +44,7 @@ import canvasBackground from '../assets/images/white_orchard_clean_map.png';
 export default defineComponent({
   name: 'HomePage',
   created() {
-    const { graph, roads, edges } = loadMapData(false);
-
-    this.graph = graph;
-    this.roads = roads;
-    this.edges = edges;
+    this.saveMapData(this.fastTravel);
   },
   mounted() {
     const { canvas } = this.$refs;
@@ -66,6 +62,9 @@ export default defineComponent({
       roads: [],
       edges: [],
       graph: null,
+      destNode: null,
+      startNode: null,
+      hasDrawing: false,
       canvasWidth: 1280,
       canvasHeight: 1024,
       roadCorrection: 5,
@@ -81,6 +80,15 @@ export default defineComponent({
         this.drawBackgroundImage();
       }
     },
+    fastTravel(newValue) {
+      if (this.hasDrawing) {
+        this.saveMapData(newValue);
+        this.clearCanvas();
+        this.drawBackgroundImage(() => {
+          this.drawPath(this.graph.bfsFromStartToDest(this.startNode, this.destNode));
+        });
+      }
+    },
   },
   computed: mapGetters({
     isBfs: 'isBfs',
@@ -88,6 +96,13 @@ export default defineComponent({
     showAllEdges: 'showAllEdges',
   }),
   methods: {
+    saveMapData(fastTravel) {
+      const { graph, roads, edges } = loadMapData(fastTravel);
+
+      this.graph = graph;
+      this.roads = roads;
+      this.edges = edges;
+    },
     drawBackgroundImage(callback = () => true) {
       const { context } = this.getCanvasAndContext();
 
