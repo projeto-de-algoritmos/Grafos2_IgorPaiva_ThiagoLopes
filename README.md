@@ -1,4 +1,4 @@
-# Witcher_3_Mapa_Geraldo_Apressado
+# Witcher 3 - Geraldo Apressado
 
 **Número da Lista**: X<br>
 **Conteúdo da Disciplina**: Grafos 1<br>
@@ -13,6 +13,8 @@
 O projeto consiste em um mapa da região de *White Orchard* do jogo *The Witcher 3*, onde o objetivo é demonstrar qual é o menor caminho entre dois pontos do mapa utilizando o algoritmo Breadth First Search (BFS).
 
 *[The Witcher 3 - White Orchard](https://witcher.fandom.com/wiki/White_Orchard)*
+
+O vídeo da apresentação pode ser encontrado clicando [aqui](./pa-grafos1-presentation.mp4).
 
 ## Screenshots
 ### Página Inicial
