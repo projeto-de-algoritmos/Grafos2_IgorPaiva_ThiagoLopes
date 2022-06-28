@@ -14,7 +14,7 @@ O projeto consiste em um mapa da região de *White Orchard* do jogo *The Witcher
 
 *[The Witcher 3 - White Orchard](https://witcher.fandom.com/wiki/White_Orchard)*
 
-O vídeo da apresentação pode ser encontrado clicando [aqui](./pa-grafos1-presentation.mp4).
+O vídeo da apresentação pode ser encontrado clicando [aqui](https://github.com/projeto-de-algoritmos/Grafos1_Witcher_3_Geraldo_Apressado/blob/c9cb0db305876c3cb251bfcd239442dda949d2fc/pa_grafos1_presentation.mp4?raw=true).
 
 ## Screenshots
 ### Página Inicial
