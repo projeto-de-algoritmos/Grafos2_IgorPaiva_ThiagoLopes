@@ -6,16 +6,9 @@
       bordered
     >
       <q-toolbar style="color: #ffffff; background-color: #027be3;">
-        <q-btn
-          flat
-          dense
-          round
-          icon="menu"
-          aria-label="Menu"
-        />
 
         <q-toolbar-title>
-          The Witcher 3 - Map
+          TW3 - Geraldo Apressado
         </q-toolbar-title>
       </q-toolbar>
 
