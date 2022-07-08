@@ -235,7 +235,16 @@ export default defineComponent({
         this.destNode = node.id;
 
         this.hasDrawing = true;
-        this.drawPath(this.graph.bfsFromStartToDest(this.startNode, this.destNode));
+
+        // console.log(
+        //   `Distance(${this.startNode}, ${this.destNode}): `,
+        //   calculateDistance(
+        //     this.graph.getNode(this.startNode).node.coordinates,
+        //     this.graph.getNode(this.destNode).node.coordinates,
+        //   ),
+        // );
+
+        this.drawPath(this.graph.dijkstra(this.startNode, this.destNode));
       }
     },
     handleCanvasClick() {

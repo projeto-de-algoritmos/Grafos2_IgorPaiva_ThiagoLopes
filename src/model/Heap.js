@@ -1,4 +1,4 @@
-export default class list {
+export default class Heap {
   constructor(type = 'min') {
     this.list = [];
     this.size = 0;
@@ -61,7 +61,7 @@ export default class list {
   }
 
   cmp(idxA, idxB) {
-    this.cmpPriorities(this.list[idxA].priority, this.list[idxB].priority);
+    return this.cmpPriorities(this.list[idxA].priority, this.list[idxB].priority);
   }
 
   cmpPriorities(priorityA, priorityB) {

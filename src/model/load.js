@@ -2,6 +2,9 @@ import Node from './Node';
 import Graph from './Graph';
 import mapData from '../assets/mapData';
 
+// eslint-disable-next-line
+export const calculateDistance = (coordA, coordB) => Math.sqrt((coordA.x - coordB.x) ** 2 + (coordA.y - coordB.y) ** 2);
+
 export const loadMapData = (fastTravel = true) => {
   const graph = new Graph();
   const roads = [];
@@ -24,7 +27,14 @@ export const loadMapData = (fastTravel = true) => {
   });
 
   mapData.edges.forEach((edge) => {
-    graph.addEdge(edge[0], edge[1]);
+    graph.addEdge(
+      edge[0],
+      edge[1],
+      calculateDistance(
+        graph.getNode(edge[0]).node.coordinates,
+        graph.getNode(edge[1]).node.coordinates,
+      ),
+    );
   });
 
   if (fastTravel) {
@@ -33,7 +43,7 @@ export const loadMapData = (fastTravel = true) => {
     );
 
     signpostsCombinations.forEach((edge) => {
-      graph.addEdge(edge[0], edge[1]);
+      graph.addEdge(edge[0], edge[1], 1);
     });
   }
 

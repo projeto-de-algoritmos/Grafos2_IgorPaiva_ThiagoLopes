@@ -119,7 +119,7 @@ export default class Graph {
     const heap = new Heap('min');
     heap.insert(start, 0);
 
-    while (!heap.empty()) {
+    while (!heap.isEmpty()) {
       const smallest = heap.remove();
       distances[smallest.id] = smallest.priority;
 
@@ -129,13 +129,15 @@ export default class Graph {
         const currentDistance = distances[smallest.id] + edge.cost;
 
         if (distances[edge.to]) {
-          if (currentDistance < distances[edge.to]) throw Error('OXE');
-        } else if (!heap.els_hash[edge.to]) {
+          if (currentDistance < distances[edge.to]) {
+            throw Error('Found better path to already-final vertex');
+          }
+        } else if (!heap.getItem(edge.to)) {
           heap.insert(edge.to, currentDistance);
 
           predecessors[edge.to] = smallest.id;
-        } else if (currentDistance < heap.get_item(edge.to).priority) {
-          heap.change_priority(edge.to, currentDistance);
+        } else if (currentDistance < heap.getItem(edge.to).priority) {
+          heap.changePriority(edge.to, currentDistance);
 
           predecessors[edge.to] = smallest.id;
         }
