@@ -32,7 +32,7 @@
         :style="nodeCss(road)"
         @click="handleNodeClick(road)"
       >
-        <q-tooltip style="font-size: 12px">
+        <q-tooltip style="font-size: 12px" v-if="getNodeTooltipMsg(road.id)">
           {{getNodeTooltipMsg(road.id)}}
         </q-tooltip>
       </div>
