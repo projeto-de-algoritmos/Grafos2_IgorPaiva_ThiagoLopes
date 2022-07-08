@@ -134,7 +134,7 @@ export default defineComponent({
       if (this.hasDrawing) {
         this.clearCanvas();
         this.drawBackgroundImage(() => {
-          this.drawPath(this.graph.bfsFromStartToDest(this.startNode, this.destNode));
+          this.drawPath(this.graph.dijkstra(this.startNode, this.destNode));
         });
       }
     },

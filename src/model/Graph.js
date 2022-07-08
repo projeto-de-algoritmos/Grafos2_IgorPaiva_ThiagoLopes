@@ -1,3 +1,5 @@
+import Heap from './Heap';
+
 export default class Graph {
   constructor() {
     this.nodes = {};
@@ -15,10 +17,10 @@ export default class Graph {
     return this.nodes;
   }
 
-  addEdge(srcId, destId) {
-    this.nodes[srcId].adjList.push(destId);
+  addEdge(srcId, destId, cost = 1) {
+    this.nodes[srcId].adjList.push({ to: destId, cost });
 
-    this.nodes[destId].adjList.push(srcId);
+    this.nodes[destId].adjList.push({ to: srcId, cost });
   }
 
   numEdges() {
@@ -52,12 +54,14 @@ export default class Graph {
       const u = queue.shift();
 
       this.nodes[u].adjList.forEach((v) => {
-        if (!visited[v]) {
-          visited[v] = true;
+        const { to } = v;
 
-          callback(this.nodes[u].node, this.nodes[v].node);
+        if (!visited[to]) {
+          visited[to] = true;
 
-          queue.push(v);
+          callback(this.nodes[u].node, this.nodes[to].node);
+
+          queue.push(to);
         }
       });
     }
@@ -78,14 +82,66 @@ export default class Graph {
       }
 
       this.nodes[node].adjList.forEach((v) => {
-        if (!visited[v]) {
-          queue.push([...path, v]);
+        const { to } = v;
 
-          visited[v] = true;
+        if (!visited[to]) {
+          queue.push([...path, to]);
+
+          visited[to] = true;
         }
       });
     }
 
     return [];
+  }
+
+  dijkstra(start, dest) {
+    const path = [];
+    const predecessors = this.dijkstra_algorithm(start, dest);
+
+    if (!predecessors[dest]) return null;
+
+    for (;;) {
+      path.push(dest);
+
+      if (dest === start) break;
+
+      dest = predecessors[dest];
+    }
+
+    return path.reverse();
+  }
+
+  dijkstra_algorithm(start, dest) {
+    const distances = {};
+    const predecessors = {};
+
+    const heap = new Heap('min');
+    heap.insert(start, 0);
+
+    while (!heap.empty()) {
+      const smallest = heap.remove();
+      distances[smallest.id] = smallest.priority;
+
+      if (smallest.id === dest) break;
+
+      this.nodes[smallest.id].adjList.forEach((edge) => {
+        const currentDistance = distances[smallest.id] + edge.cost;
+
+        if (distances[edge.to]) {
+          if (currentDistance < distances[edge.to]) throw Error('OXE');
+        } else if (!heap.els_hash[edge.to]) {
+          heap.insert(edge.to, currentDistance);
+
+          predecessors[edge.to] = smallest.id;
+        } else if (currentDistance < heap.get_item(edge.to).priority) {
+          heap.change_priority(edge.to, currentDistance);
+
+          predecessors[edge.to] = smallest.id;
+        }
+      });
+    }
+
+    return predecessors;
   }
 }
