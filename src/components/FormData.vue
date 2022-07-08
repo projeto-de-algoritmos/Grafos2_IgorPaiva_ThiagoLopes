@@ -23,10 +23,9 @@
         toggle-color="primary"
         text-color="primary"
         spread
-        disable
         :options="[
           {label: 'BFS', value: true},
-          {label: 'DFS', value: false}
+          {label: 'Dijkstra', value: false},
         ]"
       />
     </div>
@@ -48,7 +47,7 @@ export default defineComponent({
   name: 'FormData',
   data() {
     return {
-      isBfs: true,
+      isBfs: false,
       fastTravel: false,
       showAllEdges: false,
     };

@@ -131,12 +131,10 @@ export default defineComponent({
     fastTravel(newValue) {
       this.saveMapData(newValue);
 
-      if (this.hasDrawing) {
-        this.clearCanvas();
-        this.drawBackgroundImage(() => {
-          this.drawPath(this.graph.dijkstra(this.startNode, this.destNode));
-        });
-      }
+      this.redrawPath(this.search());
+    },
+    isBfs(newValue) {
+      this.redrawPath(newValue);
     },
   },
   computed: mapGetters({
@@ -145,6 +143,19 @@ export default defineComponent({
     showAllEdges: 'showAllEdges',
   }),
   methods: {
+    search(isBfs = this.isBfs) {
+      if (isBfs) return this.graph.bfsFromStartToDest(this.startNode, this.destNode);
+
+      return this.graph.dijkstra(this.startNode, this.destNode);
+    },
+    redrawPath(isBfs = this.isBfs) {
+      if (this.hasDrawing) {
+        this.clearCanvas();
+        this.drawBackgroundImage(() => {
+          this.drawPath(this.search(isBfs));
+        });
+      }
+    },
     saveMapData(fastTravel) {
       const {
         graph, roads, pois, edges,
@@ -244,7 +255,7 @@ export default defineComponent({
         //   ),
         // );
 
-        this.drawPath(this.graph.dijkstra(this.startNode, this.destNode));
+        this.drawPath(this.search());
       }
     },
     handleCanvasClick() {

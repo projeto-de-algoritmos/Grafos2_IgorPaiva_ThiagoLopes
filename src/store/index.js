@@ -16,7 +16,7 @@ import { createStore } from 'vuex';
 export default store((/* { ssrContext } */) => {
   const Store = createStore({
     state: {
-      isBfs: true,
+      isBfs: false,
       fastTravel: false,
       showAllEdges: false,
     },
