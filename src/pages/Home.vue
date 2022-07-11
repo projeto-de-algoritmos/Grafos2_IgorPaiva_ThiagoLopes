@@ -3,7 +3,7 @@
     <div class="container q-mt-sm">
       <canvas class="canvas" ref="canvas">
         <q-tooltip
-          v-if="startNode && destNode"
+          v-if="!disableFields && (hasDrawing || startNode || destNode)"
           style="font-size: 12px"
           :delay="1500"
           anchor="top middle"
@@ -129,10 +129,14 @@ export default defineComponent({
     fastTravel(newValue) {
       this.saveMapData(newValue);
 
-      this.redrawPath();
+      if (this.startNode && this.startNode === this.destNode) {
+        this.redraw(this.drawPrim);
+      } else {
+        this.redraw(() => this.drawPath(this.search()));
+      }
     },
     isBfs(newValue) {
-      this.redrawPath(newValue);
+      this.redraw(() => this.drawPath(this.search(newValue)));
     },
   },
   computed: mapGetters({
@@ -151,13 +155,11 @@ export default defineComponent({
 
       return this.graph.dijkstra(this.startNode, this.destNode);
     },
-    redrawPath(isBfs = this.isBfs) {
+    redraw(callback) {
       if (this.hasDrawing) {
         this.clearCanvas();
 
-        this.drawBackgroundImage(() => {
-          this.drawPath(this.search(isBfs));
-        });
+        this.drawBackgroundImage(callback);
       }
     },
     saveMapData(fastTravel) {
@@ -286,7 +288,7 @@ export default defineComponent({
       this.drawBackgroundImage(drawImgCallback);
     },
     handleNodeClick(node) {
-      if (this.disableFields) return;
+      if (this.disableFields || this.showAllEdges) return;
 
       if (this.startNode && this.destNode) {
         this.clearDrawnPath();
@@ -296,7 +298,7 @@ export default defineComponent({
         this.destNode = node.id;
 
         if (this.startNode === this.destNode) {
-          this.drawPrim(this.startNode);
+          this.drawPrim();
         } else {
           this.drawPath(this.search());
         }
@@ -326,8 +328,8 @@ export default defineComponent({
 
       return '';
     },
-    drawPrim(startNode) {
-      const edges = this.graph.prim_algorithm(startNode);
+    drawPrim() {
+      const edges = this.graph.prim_algorithm(this.startNode);
 
       this.hasDrawing = true;
       this.setDisableFields(true);
