@@ -32,10 +32,10 @@ export default class Heap {
     }
   }
 
-  insert(id, priority) {
+  insert(id, priority, data = {}) {
     this.hash[id] = this.size + 1;
 
-    this.list[this.size += 1] = { id, priority };
+    this.list[this.size += 1] = { id, priority, data };
 
     this.fixUp(this.size);
   }

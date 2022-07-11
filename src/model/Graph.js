@@ -3,10 +3,12 @@ import Heap from './Heap';
 export default class Graph {
   constructor() {
     this.nodes = {};
+    this.size = 0;
   }
 
   addNode(node) {
     this.nodes[node.id] = { node, adjList: [] };
+    this.size += 1;
   }
 
   getNode(id) {
@@ -145,5 +147,40 @@ export default class Graph {
     }
 
     return predecessors;
+  }
+
+  prim_algorithm(start) {
+    const edges = [];
+    const visited = {};
+
+    const heap = new Heap('min');
+    heap.insert(start, 0);
+
+    while (!heap.isEmpty()) {
+      if (Object.keys(visited).length === this.size) break;
+
+      const smallest = heap.remove();
+
+      // eslint-disable-next-line
+      if (visited[smallest.id]) continue;
+
+      visited[smallest.id] = true;
+
+      if (smallest.data.from) {
+        edges.push({
+          from: smallest.data.from,
+          to: smallest.id,
+          cost: smallest.priority,
+        });
+      }
+
+      this.nodes[smallest.id].adjList.forEach((edge) => {
+        if (!visited[edge.to]) {
+          heap.insert(edge.to, edge.cost, { from: smallest.id });
+        }
+      });
+    }
+
+    return edges;
   }
 }
