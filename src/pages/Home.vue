@@ -85,6 +85,9 @@ import canvasBackground from '../assets/images/white_orchard_clean_map.png';
 
 const POI_COLOR = '#8B969C';
 const ROAD_COLOR = '#AD1D1A';
+const ARROW_HEAD_LEN = 16;
+const CANVAS_TEXT_COLOR = '#FFFFFF';
+const LINE_WIDTH = 5;
 
 export default defineComponent({
   name: 'HomePage',
@@ -187,26 +190,68 @@ export default defineComponent({
         this.drawEdge(nodes[path[i]].node, nodes[path[i + 1]].node);
       }
     },
-    drawEdge(src, dest) {
+    drawCanvasText(context, coordinates, text) {
+      if (text) {
+        context.textAlign = 'center';
+        context.fillStyle = CANVAS_TEXT_COLOR;
+        context.fillText(text, coordinates.x, coordinates.y, 64);
+      }
+    },
+    drawCanvasLine(context, srcX, srcY, destX, destY, color) {
+      context.beginPath();
+      context.strokeStyle = color;
+      context.lineWidth = LINE_WIDTH;
+      context.moveTo(srcX, srcY);
+      context.lineTo(destX, destY);
+      context.stroke();
+    },
+    drawEdge(src, dest, text = null, arrow = false) {
       const bothSignposts = src.getProperties().signpost && dest.getProperties().signpost;
 
-      this.drawLine(
+      const drawFunction = arrow ? this.drawArrow : this.drawLine;
+
+      drawFunction(
         src.coordinates.x,
         src.coordinates.y,
         dest.coordinates.x,
         dest.coordinates.y,
         bothSignposts ? 'rgba(0, 255, 106, 0.8)' : '#000000',
+        text,
       );
     },
-    drawLine(srcX, srcY, destX, destY, color = '#000000') {
+    getLineCenter(srcX, srcY, destX, destY) {
+      return { x: (srcX + destX) / 2, y: (srcY + destY) / 2 };
+    },
+    drawArrow(srcX, srcY, destX, destY, color = '#000000', text = null) {
       const { context } = this.getCanvasAndContext();
 
+      const dx = destX - srcX;
+      const dy = destY - srcY;
+      const headlen = ARROW_HEAD_LEN;
+      const angle = Math.atan2(dy, dx);
+
+      this.drawCanvasLine(context, srcX, srcY, destX, destY, color);
+
       context.beginPath();
-      context.strokeStyle = color;
-      context.lineWidth = 5;
-      context.moveTo(srcX, srcY);
+      context.moveTo(
+        destX - headlen * Math.cos(angle - Math.PI / 6),
+        destY - headlen * Math.sin(angle - Math.PI / 6),
+      );
       context.lineTo(destX, destY);
+      context.lineTo(
+        destX - headlen * Math.cos(angle + Math.PI / 6),
+        destY - headlen * Math.sin(angle + Math.PI / 6),
+      );
       context.stroke();
+
+      this.drawCanvasText(context, this.getLineCenter(srcX, srcY, destX, destY), text);
+    },
+    drawLine(srcX, srcY, destX, destY, color = '#000000', text = null) {
+      const { context } = this.getCanvasAndContext();
+
+      this.drawCanvasLine(context, srcX, srcY, destX, destY, color);
+
+      this.drawCanvasText(context, this.getLineCenter(srcX, srcY, destX, destY), text);
     },
     drawAllEdges() {
       this.edges.forEach((edge) => {
@@ -294,7 +339,12 @@ export default defineComponent({
         for (let i = 0; i < edges.length; i += 1) {
           const edge = edges[i];
 
-          this.drawEdge(this.graph.getNode(edge.from).node, this.graph.getNode(edge.to).node);
+          this.drawEdge(
+            this.graph.getNode(edge.from).node,
+            this.graph.getNode(edge.to).node,
+            edge.cost.toFixed(2).toString(),
+            true,
+          );
           // eslint-disable-next-line no-await-in-loop
           await sleep(this.sleepTime);
         }
