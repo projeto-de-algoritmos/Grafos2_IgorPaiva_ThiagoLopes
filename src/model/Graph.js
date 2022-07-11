@@ -1,9 +1,15 @@
 import Heap from './Heap';
 
+export const WILD_FACTOR = 1.30;
+
 export default class Graph {
   constructor() {
     this.nodes = {};
     this.size = 0;
+  }
+
+  static isWieldEdge(nodeA, nodeB) {
+    return nodeA.getProperty('wild') || nodeB.getProperty('wild');
   }
 
   addNode(node) {

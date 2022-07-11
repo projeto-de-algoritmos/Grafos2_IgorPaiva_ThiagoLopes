@@ -32,22 +32,22 @@
     {
       "id": "poi_02",
       "coordinates": { "x": 296, "y": 76 },
-      "properties": { "spoils_of_war": true }
+      "properties": { "spoils_of_war": true, "wild": true }
     },
     {
       "id": "poi_03",
       "coordinates": { "x": 72, "y": 316 },
-      "properties": { "guarded_treasure": true }
+      "properties": { "guarded_treasure": true, "wild": true }
     },
     {
       "id": "poi_04",
       "coordinates": { "x": 282, "y": 344 },
-      "properties": { "place_of_power": true }
+      "properties": { "place_of_power": true, "wild": true }
     },
     {
       "id": "poi_05",
       "coordinates": { "x": 128, "y": 362 },
-      "properties": { "bandit_camp": true }
+      "properties": { "bandit_camp": true, "wild": true }
     },
     {
       "id": "sawmill",
@@ -76,12 +76,12 @@
     {
       "id": "poi_08",
       "coordinates": { "x": 416, "y": 848 },
-      "properties": { "place_of_power": true }
+      "properties": { "place_of_power": true, "wild": true }
     },
     {
       "id": "poi_09",
       "coordinates": { "x": 331, "y": 853 },
-      "properties": { "bandit_camp": true }
+      "properties": { "bandit_camp": true, "wild": true }
     },
     {
       "id": "abandoned_village",
@@ -99,12 +99,12 @@
     {
       "id": "poi_11",
       "coordinates": { "x": 685, "y": 662 },
-      "properties": { "guarded_treasure": true }
+      "properties": { "guarded_treasure": true, "wild": true }
     },
     {
       "id": "poi_12",
       "coordinates": { "x": 724, "y": 784 },
-      "properties": { "place_of_power": true }
+      "properties": { "place_of_power": true, "wild": true }
     },
     {
       "id": "poi_13",
@@ -153,7 +153,8 @@
       "coordinates": { "x": 475, "y": 78 },
       "properties" : {
         "place_of_power": true,
-        "monster_nest": true
+        "monster_nest": true,
+        "wild": true
       }
     },
     {
@@ -167,21 +168,24 @@
       "id": "poi_18",
       "coordinates": { "x": 702, "y": 245 },
       "properties" : {
-        "hidden_treasure": true
+        "hidden_treasure": true,
+        "wild": true
       }
     },
     {
       "id": "poi_19",
       "coordinates": { "x": 785, "y": 173 },
       "properties" : {
-        "hidden_treasure": true
+        "hidden_treasure": true,
+        "wild": true
       }
     },
     {
       "id": "poi_20",
       "coordinates": { "x": 882, "y": 207 },
       "properties" : {
-        "bandit_camp": true
+        "bandit_camp": true,
+        "wild": true
       }
     },
     {
@@ -195,7 +199,8 @@
       "id": "poi_21",
       "coordinates": { "x": 780, "y": 638 },
       "properties" : {
-        "bandit_camp": true
+        "bandit_camp": true,
+        "wild": true
       }
     },
     {
@@ -216,7 +221,8 @@
       "id": "poi_23",
       "coordinates": { "x": 1080, "y": 485 },
       "properties" : {
-        "monster_nest": true
+        "monster_nest": true,
+        "wild": true
       }
     },
     {
@@ -245,7 +251,8 @@
       "id": "poi_26",
       "coordinates": { "x": 1067, "y": 328 },
       "properties" : {
-        "lootable_battlefield": true
+        "lootable_battlefield": true,
+        "wild": true
       }
     },
     {

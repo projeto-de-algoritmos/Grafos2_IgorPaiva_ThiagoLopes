@@ -1,5 +1,5 @@
 import Node from './Node';
-import Graph from './Graph';
+import Graph, { WILD_FACTOR } from './Graph';
 import mapData from '../assets/mapData';
 
 // eslint-disable-next-line
@@ -27,14 +27,12 @@ export const loadMapData = (fastTravel = true) => {
   });
 
   mapData.edges.forEach((edge) => {
-    graph.addEdge(
-      edge[0],
-      edge[1],
-      calculateDistance(
-        graph.getNode(edge[0]).node.coordinates,
-        graph.getNode(edge[1]).node.coordinates,
-      ),
-    );
+    const nodeA = graph.getNode(edge[0]).node;
+    const nodeB = graph.getNode(edge[1]).node;
+    const wildEdge = Graph.isWieldEdge(nodeA, nodeB);
+    const cost = calculateDistance(nodeA.coordinates, nodeB.coordinates);
+
+    graph.addEdge(edge[0], edge[1], cost * (wildEdge ? WILD_FACTOR : 1));
   });
 
   if (fastTravel) {

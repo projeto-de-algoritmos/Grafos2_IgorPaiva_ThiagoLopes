@@ -16,4 +16,8 @@ export default class Node {
   getProperties() {
     return this.properties;
   }
+
+  getProperty(prop) {
+    return this.properties[prop];
+  }
 }
