@@ -88,6 +88,8 @@ const ROAD_COLOR = '#AD1D1A';
 const ARROW_HEAD_LEN = 16;
 const CANVAS_TEXT_COLOR = '#FFFFFF';
 const LINE_WIDTH = 5;
+const LINE_COLOR = '#000000';
+const SIGNPOST_LINE_COLOR = 'rgba(0, 255, 106, 0.8)';
 
 export default defineComponent({
   name: 'HomePage',
@@ -197,12 +199,12 @@ export default defineComponent({
         context.fillText(text, coordinates.x, coordinates.y, 64);
       }
     },
-    drawCanvasLine(context, srcX, srcY, destX, destY, color) {
+    drawCanvasLine(context, srcCoord, destCoord, color) {
       context.beginPath();
       context.strokeStyle = color;
       context.lineWidth = LINE_WIDTH;
-      context.moveTo(srcX, srcY);
-      context.lineTo(destX, destY);
+      context.moveTo(srcCoord.x, srcCoord.y);
+      context.lineTo(destCoord.x, destCoord.y);
       context.stroke();
     },
     drawEdge(src, dest, text = null, arrow = false) {
@@ -211,47 +213,45 @@ export default defineComponent({
       const drawFunction = arrow ? this.drawArrow : this.drawLine;
 
       drawFunction(
-        src.coordinates.x,
-        src.coordinates.y,
-        dest.coordinates.x,
-        dest.coordinates.y,
-        bothSignposts ? 'rgba(0, 255, 106, 0.8)' : '#000000',
+        src.coordinates,
+        dest.coordinates,
+        bothSignposts ? SIGNPOST_LINE_COLOR : LINE_COLOR,
         text,
       );
     },
-    getLineCenter(srcX, srcY, destX, destY) {
-      return { x: (srcX + destX) / 2, y: (srcY + destY) / 2 };
+    getLineCenter(srcCoord, destCoord) {
+      return { x: (srcCoord.x + destCoord.x) / 2, y: (srcCoord.y + destCoord.y) / 2 };
     },
-    drawArrow(srcX, srcY, destX, destY, color = '#000000', text = null) {
+    drawArrow(srcCoord, destCoord, color = LINE_COLOR, text = null) {
       const { context } = this.getCanvasAndContext();
 
-      const dx = destX - srcX;
-      const dy = destY - srcY;
+      const dx = destCoord.x - srcCoord.x;
+      const dy = destCoord.y - srcCoord.y;
       const headlen = ARROW_HEAD_LEN;
       const angle = Math.atan2(dy, dx);
 
-      this.drawCanvasLine(context, srcX, srcY, destX, destY, color);
+      this.drawCanvasLine(context, srcCoord, destCoord, color);
 
       context.beginPath();
       context.moveTo(
-        destX - headlen * Math.cos(angle - Math.PI / 6),
-        destY - headlen * Math.sin(angle - Math.PI / 6),
+        destCoord.x - headlen * Math.cos(angle - Math.PI / 6),
+        destCoord.y - headlen * Math.sin(angle - Math.PI / 6),
       );
-      context.lineTo(destX, destY);
+      context.lineTo(destCoord.x, destCoord.y);
       context.lineTo(
-        destX - headlen * Math.cos(angle + Math.PI / 6),
-        destY - headlen * Math.sin(angle + Math.PI / 6),
+        destCoord.x - headlen * Math.cos(angle + Math.PI / 6),
+        destCoord.y - headlen * Math.sin(angle + Math.PI / 6),
       );
       context.stroke();
 
-      this.drawCanvasText(context, this.getLineCenter(srcX, srcY, destX, destY), text);
+      this.drawCanvasText(context, this.getLineCenter(srcCoord, destCoord), text);
     },
-    drawLine(srcX, srcY, destX, destY, color = '#000000', text = null) {
+    drawLine(srcCoord, destCoord, color = LINE_COLOR, text = null) {
       const { context } = this.getCanvasAndContext();
 
-      this.drawCanvasLine(context, srcX, srcY, destX, destY, color);
+      this.drawCanvasLine(context, srcCoord, destCoord, color);
 
-      this.drawCanvasText(context, this.getLineCenter(srcX, srcY, destX, destY), text);
+      this.drawCanvasText(context, this.getLineCenter(srcCoord, destCoord), text);
     },
     drawAllEdges() {
       this.edges.forEach((edge) => {
