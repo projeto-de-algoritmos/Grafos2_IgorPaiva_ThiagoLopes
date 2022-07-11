@@ -19,6 +19,7 @@ export default store((/* { ssrContext } */) => {
       isBfs: false,
       fastTravel: false,
       showAllEdges: false,
+      sleepTime: 50,
     },
     getters: {
       isBfs(state) {
@@ -29,6 +30,9 @@ export default store((/* { ssrContext } */) => {
       },
       showAllEdges(state) {
         return state.showAllEdges;
+      },
+      sleepTime(state) {
+        return state.sleepTime;
       },
     },
     mutations: {
@@ -41,6 +45,9 @@ export default store((/* { ssrContext } */) => {
       setShowAllEdges(state, value) {
         state.showAllEdges = value;
       },
+      setSleepTime(state, value) {
+        state.sleepTime = value;
+      },
     },
     actions: {
       setIsBfs({ commit }, value) {
@@ -51,6 +58,9 @@ export default store((/* { ssrContext } */) => {
       },
       setShowAllEdges({ commit }, value) {
         commit('setShowAllEdges', value);
+      },
+      setSleepTime({ commit }, value) {
+        commit('setSleepTime', value);
       },
     },
 

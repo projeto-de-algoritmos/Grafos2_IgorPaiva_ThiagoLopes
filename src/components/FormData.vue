@@ -28,6 +28,18 @@
           {label: 'Dijkstra', value: false},
         ]"
       />
+
+      <div class="row">
+        <q-input
+          v-model="sleepTime"
+          class="col-6"
+          label="Delay (ms)"
+        >
+          <q-tooltip style="font-size: 12px">
+            Intervalo entre o desenho de cada aresta
+          </q-tooltip>
+        </q-input>
+      </div>
     </div>
   </div>
 </template>
@@ -50,6 +62,7 @@ export default defineComponent({
       isBfs: false,
       fastTravel: false,
       showAllEdges: false,
+      sleepTime: 50,
     };
   },
   watch: {
@@ -62,12 +75,16 @@ export default defineComponent({
     showAllEdges(newValue, _) {
       this.setShowAllEdges(newValue);
     },
+    sleepTime(newValue, _) {
+      this.setSleepTime(newValue);
+    },
   },
   methods: {
     ...mapActions({
       setIsBfs: 'setIsBfs',
       setFastTravel: 'setFastTravel',
       setShowAllEdges: 'setShowAllEdges',
+      setSleepTime: 'setSleepTime',
     }),
   },
 });

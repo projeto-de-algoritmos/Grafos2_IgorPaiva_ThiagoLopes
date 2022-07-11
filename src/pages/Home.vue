@@ -115,6 +115,7 @@ export default defineComponent({
       canvasWidth: 1280,
       canvasHeight: 1024,
       nodeCorrection: 5,
+      disableClick: false,
     };
   },
   watch: {
@@ -141,6 +142,7 @@ export default defineComponent({
     isBfs: 'isBfs',
     fastTravel: 'fastTravel',
     showAllEdges: 'showAllEdges',
+    sleepTime: 'sleepTime',
   }),
   methods: {
     search(isBfs = this.isBfs) {
@@ -183,7 +185,6 @@ export default defineComponent({
 
       for (let i = 0; i < path.length; i += 1) {
         if (!path[i + 1]) break;
-
         this.drawEdge(nodes[path[i]].node, nodes[path[i + 1]].node);
       }
     },
@@ -238,6 +239,8 @@ export default defineComponent({
       this.drawBackgroundImage();
     },
     handleNodeClick(node) {
+      if (this.disableClick) return;
+
       if (this.startNode && this.destNode) {
         this.clearDrawnPath();
       } else if (!this.startNode) {
@@ -245,21 +248,15 @@ export default defineComponent({
       } else if (this.startNode && !this.destNode) {
         this.destNode = node.id;
 
-        this.hasDrawing = true;
-
-        // console.log(
-        //   `Distance(${this.startNode}, ${this.destNode}): `,
-        //   calculateDistance(
-        //     this.graph.getNode(this.startNode).node.coordinates,
-        //     this.graph.getNode(this.destNode).node.coordinates,
-        //   ),
-        // );
-
-        this.drawPath(this.search());
+        if (this.startNode === this.destNode) {
+          this.drawPrim(this.startNode);
+        } else {
+          this.drawPath(this.search());
+        }
       }
     },
     handleCanvasClick() {
-      if (this.startNode || this.destNode) {
+      if (!this.disableClick && (this.startNode || this.destNode)) {
         this.clearDrawnPath();
       }
     },
@@ -270,6 +267,10 @@ export default defineComponent({
       return { canvas, context };
     },
     getNodeTooltipMsg(nodeId) {
+      if (this.disableClick) return '';
+
+      if (this.startNode === nodeId) return 'Clique mais uma vez para executar o algoritmo de Prim a partir deste nó';
+
       if (!this.startNode && !this.destNode) return 'Clique para selecionar este nó como início';
 
       if (this.startNode && !this.destNode && this.startNode !== nodeId) {
@@ -277,6 +278,25 @@ export default defineComponent({
       }
 
       return '';
+    },
+    drawPrim(startNode) {
+      const edges = this.graph.prim_algorithm(startNode);
+
+      this.disableClick = true;
+
+      (async () => {
+        // eslint-disable-next-line no-promise-executor-return
+        const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+        for (let i = 0; i < edges.length; i += 1) {
+          const edge = edges[i];
+
+          this.drawEdge(this.graph.getNode(edge.from).node, this.graph.getNode(edge.to).node);
+          // eslint-disable-next-line no-await-in-loop
+          await sleep(this.sleepTime);
+        }
+      })()
+        .then(() => { this.disableClick = false; });
     },
   },
 });
