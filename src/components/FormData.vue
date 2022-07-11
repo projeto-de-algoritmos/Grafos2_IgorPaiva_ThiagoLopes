@@ -1,13 +1,13 @@
 <template>
   <div class="q-pa-md">
     <div class="q-gutter-sm">
-      <q-checkbox v-model="fastTravel" label="Fast Travel">
+      <q-checkbox v-model="fastTravel" label="Fast Travel" :disable="disableFields">
         <q-tooltip style="font-size: 12px">
           Cria arestas entre todos os signposts
         </q-tooltip>
       </q-checkbox>
 
-      <q-checkbox v-model="showAllEdges" label="Mostrar Arestas">
+      <q-checkbox v-model="showAllEdges" label="Mostrar Arestas" :disable="disableFields">
         <q-tooltip style="font-size: 12px">
           Desenha todas as arestas disponíveis
         </q-tooltip>
@@ -23,6 +23,7 @@
         toggle-color="primary"
         text-color="primary"
         spread
+        :disable="disableFields"
         :options="[
           {label: 'BFS', value: true},
           {label: 'Dijkstra', value: false},
@@ -34,6 +35,7 @@
           v-model="sleepTime"
           class="col-6"
           label="Delay (ms)"
+          :disable="disableFields"
         >
           <q-tooltip style="font-size: 12px">
             Intervalo entre o desenho de cada aresta
@@ -53,7 +55,7 @@
 <script>
 /* eslint-disable no-unused-vars */
 import { defineComponent } from 'vue';
-import { mapActions } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 
 export default defineComponent({
   name: 'FormData',
@@ -79,6 +81,9 @@ export default defineComponent({
       this.setSleepTime(newValue);
     },
   },
+  computed: mapGetters({
+    disableFields: 'disableFields',
+  }),
   methods: {
     ...mapActions({
       setIsBfs: 'setIsBfs',

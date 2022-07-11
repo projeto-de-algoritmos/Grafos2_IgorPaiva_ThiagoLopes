@@ -78,7 +78,7 @@
 </style>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
 import { defineComponent } from 'vue';
 import { loadMapData } from '../model/load';
 import canvasBackground from '../assets/images/white_orchard_clean_map.png';
@@ -115,24 +115,16 @@ export default defineComponent({
       canvasWidth: 1280,
       canvasHeight: 1024,
       nodeCorrection: 5,
-      disableClick: false,
     };
   },
   watch: {
     showAllEdges(newValue) {
-      this.clearCanvas();
-      this.clearDrawnPath();
-
-      if (newValue) {
-        this.drawBackgroundImage(this.drawAllEdges);
-      } else {
-        this.drawBackgroundImage();
-      }
+      this.clearDrawnPath(newValue ? this.drawAllEdges : undefined);
     },
     fastTravel(newValue) {
       this.saveMapData(newValue);
 
-      this.redrawPath(this.search());
+      this.redrawPath();
     },
     isBfs(newValue) {
       this.redrawPath(newValue);
@@ -143,8 +135,12 @@ export default defineComponent({
     fastTravel: 'fastTravel',
     showAllEdges: 'showAllEdges',
     sleepTime: 'sleepTime',
+    disableFields: 'disableFields',
   }),
   methods: {
+    ...mapActions({
+      setDisableFields: 'setDisableFields',
+    }),
     search(isBfs = this.isBfs) {
       if (isBfs) return this.graph.bfsFromStartToDest(this.startNode, this.destNode);
 
@@ -153,6 +149,7 @@ export default defineComponent({
     redrawPath(isBfs = this.isBfs) {
       if (this.hasDrawing) {
         this.clearCanvas();
+
         this.drawBackgroundImage(() => {
           this.drawPath(this.search(isBfs));
         });
@@ -181,6 +178,8 @@ export default defineComponent({
       };
     },
     drawPath(path) {
+      this.hasDrawing = true;
+
       const nodes = this.graph.getAllNodes();
 
       for (let i = 0; i < path.length; i += 1) {
@@ -230,16 +229,19 @@ export default defineComponent({
 
       return `left: ${left}px; top: ${right}px; background-color: ${color}`;
     },
-    clearDrawnPath() {
+    clearPathNodes() {
       this.destNode = null;
       this.startNode = null;
+    },
+    clearDrawnPath(drawImgCallback) {
+      this.clearPathNodes();
       this.hasDrawing = false;
 
       this.clearCanvas();
-      this.drawBackgroundImage();
+      this.drawBackgroundImage(drawImgCallback);
     },
     handleNodeClick(node) {
-      if (this.disableClick) return;
+      if (this.disableFields) return;
 
       if (this.startNode && this.destNode) {
         this.clearDrawnPath();
@@ -256,7 +258,7 @@ export default defineComponent({
       }
     },
     handleCanvasClick() {
-      if (!this.disableClick && (this.startNode || this.destNode)) {
+      if (!this.disableFields && (this.startNode || this.destNode)) {
         this.clearDrawnPath();
       }
     },
@@ -267,7 +269,7 @@ export default defineComponent({
       return { canvas, context };
     },
     getNodeTooltipMsg(nodeId) {
-      if (this.disableClick) return '';
+      if (this.disableFields) return '';
 
       if (this.startNode === nodeId) return 'Clique mais uma vez para executar o algoritmo de Prim a partir deste nó';
 
@@ -282,7 +284,8 @@ export default defineComponent({
     drawPrim(startNode) {
       const edges = this.graph.prim_algorithm(startNode);
 
-      this.disableClick = true;
+      this.hasDrawing = true;
+      this.setDisableFields(true);
 
       (async () => {
         // eslint-disable-next-line no-promise-executor-return
@@ -296,7 +299,7 @@ export default defineComponent({
           await sleep(this.sleepTime);
         }
       })()
-        .then(() => { this.disableClick = false; });
+        .then(() => { this.setDisableFields(false); });
     },
   },
 });

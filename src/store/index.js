@@ -20,6 +20,7 @@ export default store((/* { ssrContext } */) => {
       fastTravel: false,
       showAllEdges: false,
       sleepTime: 50,
+      disableFields: false,
     },
     getters: {
       isBfs(state) {
@@ -33,6 +34,9 @@ export default store((/* { ssrContext } */) => {
       },
       sleepTime(state) {
         return state.sleepTime;
+      },
+      disableFields(state) {
+        return state.disableFields;
       },
     },
     mutations: {
@@ -48,6 +52,9 @@ export default store((/* { ssrContext } */) => {
       setSleepTime(state, value) {
         state.sleepTime = value;
       },
+      setDisableFields(state, value) {
+        state.disableFields = value;
+      },
     },
     actions: {
       setIsBfs({ commit }, value) {
@@ -61,6 +68,9 @@ export default store((/* { ssrContext } */) => {
       },
       setSleepTime({ commit }, value) {
         commit('setSleepTime', value);
+      },
+      setDisableFields({ commit }, value) {
+        commit('setDisableFields', value);
       },
     },
 
