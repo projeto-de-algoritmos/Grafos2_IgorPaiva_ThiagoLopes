@@ -12,23 +12,6 @@
         </q-toolbar-title>
       </q-toolbar>
 
-      <q-list>
-        <q-item-label
-          header
-        >
-          Pages
-        </q-item-label>
-
-        <EssentialLink
-          v-for="link in essentialLinks"
-          :key="link.title"
-          v-bind="link"
-          target="_self"
-        />
-      </q-list>
-
-      <hr class="q-mt-lg">
-
       <FormData />
     </q-drawer>
 
@@ -40,37 +23,17 @@
 
 <script>
 import { defineComponent, ref } from 'vue';
-import EssentialLink from 'components/EssentialLink.vue';
 import FormData from 'components/FormData.vue';
-
-const linksList = [
-  {
-    title: 'Home',
-    caption: 'Homepage',
-    icon: 'home',
-    link: '/',
-  },
-  {
-    title: 'Map',
-    caption: 'Map with all edges',
-    icon: 'map',
-    link: '/map',
-  },
-];
 
 export default defineComponent({
   name: 'MainLayout',
-
   components: {
-    EssentialLink,
     FormData,
   },
-
   setup() {
     const leftDrawerOpen = ref(false);
 
     return {
-      essentialLinks: linksList,
       leftDrawerOpen,
       toggleLeftDrawer() {
         leftDrawerOpen.value = !leftDrawerOpen.value;
