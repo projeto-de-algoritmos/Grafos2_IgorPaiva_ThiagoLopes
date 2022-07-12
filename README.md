@@ -1,4 +1,4 @@
-# Witcher 3 - Geraldo Apressado
+# Witcher 3 - Geraldo Mais Apressado
 
 **Número da Lista**: X<br>
 **Conteúdo da Disciplina**: Grafos 2<br>
