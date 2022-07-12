@@ -61,7 +61,7 @@
             <q-input
               v-model="weightSum"
               class="col-6 q-mt-sm"
-              label="Weight Sum"
+              label="Soma custos"
               style="pointer-events: none;"
             />
           </div>
