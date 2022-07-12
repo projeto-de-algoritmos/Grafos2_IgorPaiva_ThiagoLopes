@@ -8,7 +8,7 @@
       <q-toolbar style="color: #ffffff; background-color: #027be3;">
 
         <q-toolbar-title>
-          TW3 - Geraldo Apressado
+          TW3 - Geraldo + Apressado
         </q-toolbar-title>
       </q-toolbar>
 
