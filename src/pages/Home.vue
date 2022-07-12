@@ -260,11 +260,10 @@ export default defineComponent({
       this.drawCanvasText(context, this.getLineCenter(srcCoord, destCoord), text);
     },
     drawAllEdges() {
-      this.edges.forEach((edge) => {
-        const [start, end] = edge;
+      this.edges.forEach(({ from, to, cost }) => {
         const nodes = this.graph.getAllNodes();
 
-        this.drawEdge(nodes[start].node, nodes[end].node);
+        this.drawEdge(nodes[from].node, nodes[to].node, cost.toFixed(2));
       });
     },
     clearCanvas() {
@@ -351,7 +350,7 @@ export default defineComponent({
           this.drawEdge(
             this.graph.getNode(edge.from).node,
             this.graph.getNode(edge.to).node,
-            edge.cost.toFixed(2).toString(),
+            null,
             true,
           );
           // eslint-disable-next-line no-await-in-loop

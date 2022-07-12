@@ -9,6 +9,7 @@ export const loadMapData = (fastTravel = true) => {
   const graph = new Graph();
   const roads = [];
   const pois = [];
+  const edges = [];
 
   mapData.points_of_interest.forEach((poi) => {
     const node = new Node(poi.id, poi.coordinates, poi.properties);
@@ -30,9 +31,13 @@ export const loadMapData = (fastTravel = true) => {
     const nodeA = graph.getNode(edge[0]).node;
     const nodeB = graph.getNode(edge[1]).node;
     const wildEdge = Graph.isWieldEdge(nodeA, nodeB);
-    const cost = calculateDistance(nodeA.coordinates, nodeB.coordinates);
+    const cost = calculateDistance(
+      nodeA.coordinates,
+      nodeB.coordinates,
+    ) * (wildEdge ? WILD_FACTOR : 1);
 
-    graph.addEdge(edge[0], edge[1], cost * (wildEdge ? WILD_FACTOR : 1));
+    graph.addEdge(edge[0], edge[1], cost);
+    edges.push({ from: edge[0], to: edge[1], cost });
   });
 
   if (fastTravel) {
@@ -46,6 +51,6 @@ export const loadMapData = (fastTravel = true) => {
   }
 
   return {
-    graph, roads, pois, edges: mapData.edges,
+    graph, roads, pois, edges,
   };
 };
