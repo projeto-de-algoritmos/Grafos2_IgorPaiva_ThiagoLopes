@@ -320,7 +320,7 @@ export default defineComponent({
       return { canvas, context };
     },
     getNodeTooltipMsg(nodeId) {
-      if (this.disableFields) return '';
+      if (this.disableFields || this.showAllEdges) return '';
 
       if (this.startNode === nodeId) return 'Clique mais uma vez para executar o algoritmo de Prim a partir deste nó';
 
