@@ -136,18 +136,16 @@ export default class Graph {
       this.nodes[smallest.id].adjList.forEach((edge) => {
         const currentDistance = distances[smallest.id] + edge.cost;
 
-        if (distances[edge.to]) {
-          if (currentDistance < distances[edge.to]) {
-            throw Error('Found better path to already-final vertex');
+        if (!distances[edge.to]) {
+          if (!heap.getItem(edge.to)) {
+            heap.insert(edge.to, currentDistance);
+
+            predecessors[edge.to] = smallest.id;
+          } else if (currentDistance < heap.getItem(edge.to).priority) {
+            heap.changePriority(edge.to, currentDistance);
+
+            predecessors[edge.to] = smallest.id;
           }
-        } else if (!heap.getItem(edge.to)) {
-          heap.insert(edge.to, currentDistance);
-
-          predecessors[edge.to] = smallest.id;
-        } else if (currentDistance < heap.getItem(edge.to).priority) {
-          heap.changePriority(edge.to, currentDistance);
-
-          predecessors[edge.to] = smallest.id;
         }
       });
     }
