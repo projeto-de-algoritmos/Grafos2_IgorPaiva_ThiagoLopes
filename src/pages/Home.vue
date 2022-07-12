@@ -145,10 +145,12 @@ export default defineComponent({
     showAllEdges: 'showAllEdges',
     sleepTime: 'sleepTime',
     disableFields: 'disableFields',
+    weightSum: 'weightSum',
   }),
   methods: {
     ...mapActions({
       setDisableFields: 'setDisableFields',
+      setWeightSum: 'setWeightSum',
     }),
     search(isBfs = this.isBfs) {
       if (isBfs) return this.graph.bfsFromStartToDest(this.startNode, this.destNode);
@@ -157,6 +159,8 @@ export default defineComponent({
     },
     redraw(callback) {
       if (this.hasDrawing) {
+        this.setWeightSum(0);
+
         this.clearCanvas();
 
         this.drawBackgroundImage(callback);
@@ -307,6 +311,7 @@ export default defineComponent({
     handleCanvasClick() {
       if (!this.disableFields && (this.startNode || this.destNode)) {
         this.clearDrawnPath();
+        this.setWeightSum(0);
       }
     },
     getCanvasAndContext() {
@@ -337,10 +342,12 @@ export default defineComponent({
       (async () => {
         // eslint-disable-next-line no-promise-executor-return
         const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-
+        this.setWeightSum(0);
+        let weight = 0;
         for (let i = 0; i < edges.length; i += 1) {
           const edge = edges[i];
-
+          weight = this.weightSum + edge.cost;
+          this.setWeightSum(Math.round(weight * 100) / 100);
           this.drawEdge(
             this.graph.getNode(edge.from).node,
             this.graph.getNode(edge.to).node,

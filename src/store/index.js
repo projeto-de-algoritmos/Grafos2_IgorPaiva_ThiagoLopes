@@ -21,6 +21,7 @@ export default store((/* { ssrContext } */) => {
       showAllEdges: false,
       sleepTime: 50,
       disableFields: false,
+      weightSum: 0,
     },
     getters: {
       isBfs(state) {
@@ -37,6 +38,9 @@ export default store((/* { ssrContext } */) => {
       },
       disableFields(state) {
         return state.disableFields;
+      },
+      weightSum(state) {
+        return state.weightSum;
       },
     },
     mutations: {
@@ -55,6 +59,9 @@ export default store((/* { ssrContext } */) => {
       setDisableFields(state, value) {
         state.disableFields = value;
       },
+      setWeightSum(state, value) {
+        state.weightSum = value;
+      },
     },
     actions: {
       setIsBfs({ commit }, value) {
@@ -71,6 +78,9 @@ export default store((/* { ssrContext } */) => {
       },
       setDisableFields({ commit }, value) {
         commit('setDisableFields', value);
+      },
+      setWeightSum({ commit }, value) {
+        commit('setWeightSum', value);
       },
     },
 
